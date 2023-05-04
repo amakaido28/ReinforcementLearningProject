@@ -12,8 +12,8 @@ from tensorflow import keras
 from keras import layers
 from typing import Any,List,Sequence,Tuple
 
-env=rware.Warehouse(9,1,5,3,2,1,3,5,7,rware.RewardType.GLOBAL)
-
+env=rware.Warehouse(9,1,1,1,2,1,3,5,7,rware.RewardType.GLOBAL)
+#env=gym.make('CartPole-v1')
 seed=42
 tf.random.set_seed(seed)
 np.random.seed(seed)
@@ -38,7 +38,7 @@ class ActorCritic(tf.keras.Model):
     x = self.common(inputs)
     return self.actor(x), self.critic(x)
   
-num_actions=env.action_space.n
+num_actions=5
 num_hidden_units=128
 
 model=ActorCritic(num_actions,num_hidden_units)
@@ -59,6 +59,15 @@ def tf_env_step(action: tf.Tensor) -> List[tf.Tensor]:
   return tf.numpy_function(env_step, [action], 
                            [tf.float32, tf.int32, tf.int32])
 
+import keras.backend as K
+
+def call(self, x):
+
+    tf.print(x)
+    tf.print(self.kernel) 
+
+    return K.dot(x, self.kernel)
+
 def run_episode(
     initial_state: tf.Tensor,  
     model: tf.keras.Model, 
@@ -78,10 +87,24 @@ def run_episode(
 
     # Run the model and to get action probabilities and critic value
     action_logits_t, value = model(state)
-
+    print("the value of the actor is: ")
+    tf.print(action_logits_t)
+    print("the value of the critic is: ")
+    tf.print(value)
     # Sample next action from the action probability distribution
-    action = tf.random.categorical(action_logits_t, 1)[0, 0]
+    #action = tf.random.categorical(action_logits_t, 1)[0, 0]
+    #probs=tf.constant(action_logits_t)
+    #probs_array = probs.numpy()
+    #probs_matrix = np.reshape(probs_array, (5,))
+    #action = np.random.choice(5, p=probs_matrix)
+
     action_probs_t = tf.nn.softmax(action_logits_t)
+
+    print("the value of the action prob is: ")
+    tf.print(action_probs_t)
+    sampled_index = tf.random.categorical(tf.math.log(action_probs_t), num_samples=1)
+    #action = tf.random.categorical(action_probs_t, [[1]])
+    
 
     # Store critic values
     values = values.write(t, tf.squeeze(value))
@@ -186,9 +209,9 @@ def train_step(
 
   return episode_reward
 
-min_episodes_criterion = 100
-max_episodes = 100
-max_steps_per_episode = 50
+min_episodes_criterion = 3
+max_episodes = 5
+max_steps_per_episode = 6
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
@@ -203,7 +226,8 @@ episodes_reward: collections.deque = collections.deque(maxlen=min_episodes_crite
 
 t = tqdm.trange(max_episodes)
 for i in t:
-    initial_state, info = env.reset()
+    #initial_state, info = env.reset()
+    initial_state = env.reset()
     initial_state = tf.constant(initial_state, dtype=tf.float32)
     episode_reward = int(train_step(
         initial_state, model, optimizer, gamma, max_steps_per_episode))
