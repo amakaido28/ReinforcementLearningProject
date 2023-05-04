@@ -20,8 +20,8 @@ def critic_loss(values, returns):
 # Definire l'ambiente rware e le costanti per il numero di episodi e di passi massimi
 #env = RwareSmallEnv()
 env=rware.Warehouse(9,1,5,3,2,1,3,5,7,rware.RewardType.GLOBAL)
-state_size = env.observation_space.shape[0]
-action_size = env.action_space.n
+state_size = 49
+action_size = 5
 
 num_episodes = 2000
 max_steps_per_episode = 500
