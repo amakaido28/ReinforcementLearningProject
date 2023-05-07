@@ -12,7 +12,8 @@ from tensorflow import keras
 from keras import layers
 from typing import Any,List,Sequence,Tuple
 
-env=gym.make('CartPole-v1')
+env=rware.Warehouse(9,1,1,1,2,1,3,5,7,rware.RewardType.GLOBAL)
+#env=gym.make('CartPole-v1')
 seed=42
 tf.random.set_seed(seed)
 np.random.seed(seed)
@@ -37,10 +38,10 @@ class ActorCritic(tf.keras.Model):
     x = self.common(inputs)
     return self.actor(x), self.critic(x)
   
-num_actions = env.action_space.n  # 2
-num_hidden_units = 128
+num_actions=5
+num_hidden_units=128
 
-model = ActorCritic(num_actions, num_hidden_units)
+model=ActorCritic(num_actions,num_hidden_units)
 
 # Wrap Gym's `env.step` call as an operation in a TensorFlow function.
 # This would allow it to be included in a callable TensorFlow graph.
@@ -58,6 +59,15 @@ def tf_env_step(action: tf.Tensor) -> List[tf.Tensor]:
   return tf.numpy_function(env_step, [action], 
                            [tf.float32, tf.int32, tf.int32])
 
+import keras.backend as K
+
+def call(self, x):
+
+    tf.print(x)
+    tf.print(self.kernel) 
+
+    return K.dot(x, self.kernel)
+
 def run_episode(
     initial_state: tf.Tensor,  
     model: tf.keras.Model, 
@@ -71,31 +81,33 @@ def run_episode(
   initial_state_shape = initial_state.shape
   state = initial_state
 
-  print(tf.print(state))
-
   for t in tf.range(max_steps):
     # Convert state into a batched tensor (batch size = 1)
-    state = tf.expand_dims(state, 0)
+    #state = tf.expand_dims(state, 0)
+
     # Run the model and to get action probabilities and critic value
     action_logits_t, value = model(state)
-    print(tf.print(action_logits_t))
-    print(tf.print(value))
-
+    print("the value of the actor is: ")
+    tf.print(action_logits_t)
+    print("the value of the critic is: ")
+    tf.print(value)
     # Sample next action from the action probability distribution
-    action = tf.random.categorical(action_logits_t, 1)[0,0]
-    print(tf.print(action))
+
     action_probs_t = tf.nn.softmax(action_logits_t)
-    print(action.shape)
+    print(action_probs_t.shape)
+    print("the value of the action prob is: ")
+    tf.print(action_probs_t)
+    prob_log=tf.math.log(action_probs_t)
+    action = tf.random.categorical(prob_log, num_samples=1)[0,0]
+
     # Store critic values
     values = values.write(t, tf.squeeze(value))
 
-    print(action_probs_t.shape)
     # Store log probability of the action chosen
     action_probs = action_probs.write(t, action_probs_t[0, action])
-    
+    action=tf.reshape(action,[1]) #must be as the shape of the number of agents
     # Apply action to the environment to get next state and reward
     state, reward, done = tf_env_step(action)
-    print(tf.print(state))
     state.set_shape(initial_state_shape)
 
     # Store reward
@@ -156,6 +168,7 @@ def compute_loss(
 
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
 
+
 def train_step(
     initial_state: tf.Tensor, 
     model: tf.keras.Model, 
@@ -190,9 +203,9 @@ def train_step(
 
   return episode_reward
 
-min_episodes_criterion = 100
-max_episodes = 10000
-max_steps_per_episode = 500
+min_episodes_criterion = 3
+max_episodes = 5
+max_steps_per_episode = 6
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
@@ -207,7 +220,8 @@ episodes_reward: collections.deque = collections.deque(maxlen=min_episodes_crite
 
 t = tqdm.trange(max_episodes)
 for i in t:
-    initial_state, info = env.reset()
+    #initial_state, info = env.reset()
+    initial_state = env.reset()
     initial_state = tf.constant(initial_state, dtype=tf.float32)
     episode_reward = int(train_step(
         initial_state, model, optimizer, gamma, max_steps_per_episode))
@@ -266,3 +280,4 @@ image_file = 'cartpole-v1.gif'
 # loop=0: loop forever, duration=1: play each frame for 1ms
 images[0].save(
     image_file, save_all=True, append_images=images[1:], loop=0, duration=1)
+
