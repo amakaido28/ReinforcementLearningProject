@@ -114,7 +114,7 @@ class Viewer(object):
         assert right > left and top > bottom
         scalex = self.width / (right - left)
         scaley = self.height / (top - bottom)
-        self.transform = Transform(
+        self.transform = pyglet.Transform(
             translation=(-left * scalex, -bottom * scaley), scale=(scalex, scaley)
         )
 

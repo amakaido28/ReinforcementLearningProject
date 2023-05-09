@@ -12,7 +12,7 @@ from tensorflow import keras
 from keras import layers
 from typing import Any,List,Sequence,Tuple
 
-env=rware.Warehouse(9,1,1,1,2,1,3,5,7,rware.RewardType.GLOBAL)
+env=rware.Warehouse(9,1,1,1,1,0,3,5,7,rware.RewardType.GLOBAL)
 #env=gym.make('CartPole-v1')
 seed=42
 tf.random.set_seed(seed)
@@ -49,8 +49,8 @@ model=ActorCritic(num_actions,num_hidden_units)
 def env_step(action: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
   """Returns state, reward and done flag given an action."""
 
-  state, reward, done, truncated, info = env.step(action)
-  return (state.astype(np.float32), 
+  state, reward, done, truncated = env.step(action)
+  return (np.array(state,np.float32), 
           np.array(reward, np.int32), 
           np.array(done, np.int32))
 
@@ -107,6 +107,9 @@ def run_episode(
     action_probs = action_probs.write(t, action_probs_t[0, action])
     action=tf.reshape(action,[1]) #must be as the shape of the number of agents
     # Apply action to the environment to get next state and reward
+    tf.print(action)
+    action=np.array([action])
+
     state, reward, done = tf_env_step(action)
     state.set_shape(initial_state_shape)
 
@@ -134,6 +137,7 @@ def get_expected_return(
   # Start from the end of `rewards` and accumulate reward sums
   # into the `returns` array
   rewards = tf.cast(rewards[::-1], dtype=tf.float32)
+  rewards=tf.reshape(rewards,[5,])
   discounted_sum = tf.constant(0.0)
   discounted_sum_shape = discounted_sum.shape
   for i in tf.range(n):
@@ -203,13 +207,13 @@ def train_step(
 
   return episode_reward
 
-min_episodes_criterion = 3
-max_episodes = 5
-max_steps_per_episode = 6
+min_episodes_criterion = 10
+max_episodes = 12
+max_steps_per_episode = 10
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
-reward_threshold = 475
+reward_threshold = 0
 running_reward = 0
 
 # The discount factor for future rewards

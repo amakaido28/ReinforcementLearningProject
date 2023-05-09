@@ -11,7 +11,7 @@ layout = """
 ...x...
 .g...g.
 """
-env=rware.Warehouse(9,1,1,1,2,1,3,5,7,rware.RewardType.GLOBAL)
+env=rware.Warehouse(9,1,1,1,2,0,3,5,7,rware.RewardType.GLOBAL)
 episodes=100
 for episode in range(1,episodes+1): 
     state=env.reset()
@@ -22,7 +22,7 @@ for episode in range(1,episodes+1):
         actions = env.action_space.sample()
         n_state,reward,done,info=env.step(actions)
         done=False
-        score+=reward
+        #score+=reward
    
 env.action_space.sample()
 

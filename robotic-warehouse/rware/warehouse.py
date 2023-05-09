@@ -706,12 +706,15 @@ class Warehouse(gym.Env):
     def step(
         self, actions: List[Action]
     ) -> Tuple[List[np.ndarray], List[float], List[bool], Dict]:
+        print(str(len(actions)))
+        print(str(len(self.agents)))
         assert len(actions) == len(self.agents)
 
         for agent, action in zip(self.agents, actions):
             if self.msg_bits > 0:
                 agent.req_action = Action(action[0])
-                agent.message[:] = action[1:]
+                #agent.message[:] = action[1:]
+                print()
             else:
                 agent.req_action = Action(action)
 

@@ -37,7 +37,7 @@ class ActorCritic(tf.keras.Model):
     x = self.common(inputs)
     return self.actor(x), self.critic(x)
   
-num_actions = env.action_space.n  # 2
+num_actions = 2  # 2
 num_hidden_units = 128
 
 model = ActorCritic(num_actions, num_hidden_units)
@@ -48,7 +48,7 @@ model = ActorCritic(num_actions, num_hidden_units)
 def env_step(action: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
   """Returns state, reward and done flag given an action."""
 
-  state, reward, done, truncated, info = env.step(action)
+  state, reward, done, truncated = env.step(action)
   return (state.astype(np.float32), 
           np.array(reward, np.int32), 
           np.array(done, np.int32))
@@ -190,9 +190,9 @@ def train_step(
 
   return episode_reward
 
-min_episodes_criterion = 100
-max_episodes = 10000
-max_steps_per_episode = 500
+min_episodes_criterion = 1
+max_episodes = 10
+max_steps_per_episode = 5
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
@@ -207,7 +207,7 @@ episodes_reward: collections.deque = collections.deque(maxlen=min_episodes_crite
 
 t = tqdm.trange(max_episodes)
 for i in t:
-    initial_state, info = env.reset()
+    initial_state = env.reset()
     initial_state = tf.constant(initial_state, dtype=tf.float32)
     episode_reward = int(train_step(
         initial_state, model, optimizer, gamma, max_steps_per_episode))
