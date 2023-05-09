@@ -12,7 +12,16 @@ from tensorflow import keras
 from keras import layers
 from typing import Any,List,Sequence,Tuple
 
-env=rware.Warehouse(9,1,1,1,1,0,3,5,7,rware.RewardType.GLOBAL)
+layout = """
+ggggggg
+gggxggg
+ggxgxgg
+gxgggxg
+ggxgxgg
+gggxggg
+ggggggg
+"""
+env=rware.Warehouse(9,1,1,2,1,0,3,None,None,rware.RewardType.GLOBAL,layout=layout)
 #env=gym.make('CartPole-v1')
 seed=42
 tf.random.set_seed(seed)
@@ -84,7 +93,7 @@ def run_episode(
   for t in tf.range(max_steps):
     # Convert state into a batched tensor (batch size = 1)
     #state = tf.expand_dims(state, 0)
-
+    env.render("human")
     # Run the model and to get action probabilities and critic value
     action_logits_t, value = model(state)
     print("the value of the actor is: ")
@@ -98,19 +107,28 @@ def run_episode(
     print("the value of the action prob is: ")
     tf.print(action_probs_t)
     prob_log=tf.math.log(action_probs_t)
-    action = tf.random.categorical(prob_log, num_samples=1)[0,0]
-
+    n_ag=prob_log.shape[0]
+    while n_ag>0:
+      n_ag=n_ag-1
+      #prendere la prima, seconda, terza, .. colonna per fare sampling dell'azione corrispondente
+      #fai sampling azione con categorica
+      #inserisci l'azione nella lista
+      
+    action = tf.random.categorical(prob_log, num_samples=2)[0,0]
+    tf.print(action)
     # Store critic values
     values = values.write(t, tf.squeeze(value))
 
     # Store log probability of the action chosen
     action_probs = action_probs.write(t, action_probs_t[0, action])
-    action=tf.reshape(action,[1]) #must be as the shape of the number of agents
+    action=tf.reshape(action,[2]) #must be as the shape of the number of agents
     # Apply action to the environment to get next state and reward
     tf.print(action)
     action=np.array([action])
 
     state, reward, done = tf_env_step(action)
+    if(reward>0):
+      tf.print(reward)
     state.set_shape(initial_state_shape)
 
     # Store reward
@@ -137,7 +155,7 @@ def get_expected_return(
   # Start from the end of `rewards` and accumulate reward sums
   # into the `returns` array
   rewards = tf.cast(rewards[::-1], dtype=tf.float32)
-  rewards=tf.reshape(rewards,[5,])
+  rewards=tf.reshape(rewards,[500,])
   discounted_sum = tf.constant(0.0)
   discounted_sum_shape = discounted_sum.shape
   for i in tf.range(n):
@@ -208,12 +226,12 @@ def train_step(
   return episode_reward
 
 min_episodes_criterion = 10
-max_episodes = 12
-max_steps_per_episode = 10
+max_episodes = 30
+max_steps_per_episode = 500
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
-reward_threshold = 0
+reward_threshold = 50
 running_reward = 0
 
 # The discount factor for future rewards
@@ -251,20 +269,23 @@ print(f'\nSolved at episode {i}: average reward: {running_reward:.2f}!')
 from IPython import display as ipythondisplay
 from PIL import Image
 
-render_env = gym.make("CartPole-v1", render_mode='rgb_array')
+#render_env = env.render("rgb_array")
 
 def render_episode(env: gym.Env, model: tf.keras.Model, max_steps: int): 
-  state, info = env.reset()
+  state = env.reset()
   state = tf.constant(state, dtype=tf.float32)
-  screen = env.render()
+  screen = env.render(mode="rgb_array")
   images = [Image.fromarray(screen)]
 
   for i in range(1, max_steps + 1):
     state = tf.expand_dims(state, 0)
     action_probs, _ = model(state)
+    tf.print(action_probs)
     action = np.argmax(np.squeeze(action_probs))
-
-    state, reward, done, truncated, info = env.step(action)
+    action=tf.reshape(action,[1])
+    tf.print(action)
+    action=np.array([action])
+    state, reward, done, truncated = env.step(action)
     state = tf.constant(state, dtype=tf.float32)
 
     # Render screen every 10 steps
@@ -279,8 +300,8 @@ def render_episode(env: gym.Env, model: tf.keras.Model, max_steps: int):
 
 
 # Save GIF image
-images = render_episode(render_env, model, max_steps_per_episode)
-image_file = 'cartpole-v1.gif'
+images = render_episode(env, model, max_steps_per_episode)
+image_file = 'rware.gif'
 # loop=0: loop forever, duration=1: play each frame for 1ms
 images[0].save(
     image_file, save_all=True, append_images=images[1:], loop=0, duration=1)

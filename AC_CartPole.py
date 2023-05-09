@@ -190,13 +190,13 @@ def train_step(
 
   return episode_reward
 
-min_episodes_criterion = 1
-max_episodes = 10
-max_steps_per_episode = 5
+min_episodes_criterion = 10
+max_episodes = 12
+max_steps_per_episode = 10
 
 # `CartPole-v1` is considered solved if average reward is >= 475 over 500 
 # consecutive trials
-reward_threshold = 475
+reward_threshold = 20
 running_reward = 0
 
 # The discount factor for future rewards
