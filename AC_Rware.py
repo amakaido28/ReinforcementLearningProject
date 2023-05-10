@@ -107,26 +107,29 @@ def run_episode(
     print("the value of the action prob is: ")
     tf.print(action_probs_t)
     prob_log=tf.math.log(action_probs_t)
-    n_ag=prob_log.shape[0]
-    while n_ag>0:
-      n_ag=n_ag-1
+    actions=[]
+    for action_prob in prob_log:
+      action_prob=tf.reshape(action_prob, [1,5])
+      action = tf.random.categorical(action_prob, num_samples=1)[0,0]
+      tf.print(action)
+      actions.append(action)
       #prendere la prima, seconda, terza, .. colonna per fare sampling dell'azione corrispondente
       #fai sampling azione con categorica
       #inserisci l'azione nella lista
       
-    action = tf.random.categorical(prob_log, num_samples=2)[0,0]
-    tf.print(action)
+    #action = tf.random.categorical(prob_log, num_samples=2)[0,0]
+    #tf.print(action)
     # Store critic values
     values = values.write(t, tf.squeeze(value))
 
     # Store log probability of the action chosen
-    action_probs = action_probs.write(t, action_probs_t[0, action])
-    action=tf.reshape(action,[2]) #must be as the shape of the number of agents
+    #action_probs = action_probs.write(t, action_probs_t[0, action])
+    #action=tf.reshape(action,[2]) #must be as the shape of the number of agents
     # Apply action to the environment to get next state and reward
-    tf.print(action)
-    action=np.array([action])
+    #tf.print(action)
+    #action=np.array([action])
 
-    state, reward, done = tf_env_step(action)
+    state, reward, done = tf_env_step(actions)
     if(reward>0):
       tf.print(reward)
     state.set_shape(initial_state_shape)
