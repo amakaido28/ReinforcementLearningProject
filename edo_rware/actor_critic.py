@@ -1,3 +1,4 @@
+import os 
 import tensorflow as tf
 from keras.optimizers import Adam 
 import tensorflow_probability as tfp
@@ -26,14 +27,16 @@ class Agent:
         return action.numpy()
     
     
-    def save_models(self):
+    def save_models(self, i):
         print('... saving models ...')
-        self.actor_critic.save_weights(self.actor_critic.checkpoint_file)
+        checkpoint_file = os.path.join(self.actor_critic.checkpoint_file, str(i))
+        self.actor_critic.save_weights(checkpoint_file)
 
 
-    def load_models(self):
+    def load_models(self, i):
         print('... loading models ...')
-        self.actor_critic.load_weights(self.actor_critic.checkpoint_file)
+        checkpoint_file = os.path.join(self.actor_critic.checkpoint_file, str(i))
+        self.actor_critic.load_weights(checkpoint_file)
 
 
     def learn(self, state, reward, state_, done):
