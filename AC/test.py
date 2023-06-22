@@ -9,8 +9,8 @@ def test(n_episodes=5, name_actor='LunarLander_0.001_actor.pth', name_critic='Lu
     actor   = PolicyNetwork()
     critic  = StateValueNetwork()
     
-    actor.load_state_dict(torch.load('./preTrained/2_net/{}'.format(name_actor)))
-    critic.load_state_dict(torch.load('./preTrained/2_net/{}'.format(name_critic)))
+    actor.load_state_dict(torch.load('./{}'.format(name_actor)))
+    critic.load_state_dict(torch.load('./{}'.format(name_critic)))
 
     for i_episode in range(1, n_episodes+1):
         state, _        = env.reset()

@@ -21,7 +21,7 @@ def train():
     running_reward      = 0
     score_history       = []
     recent_scores       = deque(maxlen = 100)
-    figure_file         = './learning_curve_2net_2.png'
+    figure_file         = './learning_curve.png'
 
     for i_episode in range(0, 10000):
         state, _    = env.reset()
@@ -58,8 +58,8 @@ def train():
             running_reward = 0
 
         if np.array(recent_scores).mean() >= 195:
-            torch.save(actor.state_dict(), './preTrained/2_net/LunarLander_{}_actor_2.pth'.format(lr))
-            torch.save(critic.state_dict(), './preTrained/2_net/LunarLander_{}_critic_2.pth'.format(lr))
+            torch.save(actor.state_dict(), './LunarLander_{}_actor.pth'.format(lr))
+            torch.save(critic.state_dict(), './LunarLander_{}_critic.pth'.format(lr))
             print("########## Solved! ##########")
             break
     

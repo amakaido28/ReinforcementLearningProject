@@ -1,50 +1,28 @@
 # Reinforcement Learning - Lunar Lander
 
-Questo repository contiene l'implementazione di un algoritmo di apprendimento per rinforzo (Reinforcement Learning) utilizzando l'ambiente "LunarLander-v2" di Gym.
+This repository contains the implementation of a Reinforcement Learning algorithm using Gym's "LunarLander-v2" environment.
 
-## Descrizione del Progetto
+## Project Description
 
-L'obiettivo di questo progetto è addestrare un agente di intelligenza artificiale a pilotare un modulo di atterraggio lunare nel gioco Lunar Lander. L'agente apprende attraverso l'interazione con l'ambiente, osservando lo stato attuale e prendendo azioni per massimizzare il punteggio ottenuto.
+The goal of this project is to train an AI agent to pilot a lunar landing module in the game "Lunar Lander". The agent learns through interaction with the environment, observing the current state and taking actions to maximize the score obtained.
 
-## Dipendenze
+## Dependences
 
 - Python 3.x
 - PyTorch
 - Gym
 
-## Istruzioni
+## Code Structure
 
-1. Installazione delle dipendenze:
-`pip install torch gym`
+The code for the Actor-Critic model found in the `ac` folder is organized in the following files:
 
+- `utils.py`: Contains utility functions for loss calculation, action selection and learning curve tracking.
+- `network.py`: Contains neural network definitions used for policy and state value.
+- `train.py`: The main file that starts agent training on the Lunar Lander game.
+- `test.py`: The file that starts the agent's test on the Lunar Lander game.
 
-2. Clonare il repository:
-`git clone https://github.com/tuonome/reinforcement-learning-lunar-lander.git`
+During training, the agent uses the Actor-Critic (AC) algorithm to improve its performance. The neural network for policy (Policy Network) learns to select actions based on observed states, while the neural network for state value (State Value Network) estimates the value of a state.
 
+## Results
 
-3. Navigare nella directory del progetto:
-`cd reinforcement-learning-lunar-lander`
-
-
-4. Eseguire il file di addestramento:
-`python train.py`
-
-
-
-## Struttura del Codice
-
-Il codice è organizzato nei seguenti file:
-
-- `utils.py`: Contiene funzioni di utilità per il calcolo della perdita, la selezione dell'azione e il tracciamento della curva di apprendimento.
-- `network.py`: Contiene le definizioni delle reti neurali utilizzate per la politica e il valore dello stato.
-- `train.py`: Il file principale che avvia l'addestramento dell'agente sul gioco Lunar Lander.
-
-Durante l'addestramento, l'agente utilizza l'algoritmo Advantage Actor-Critic per migliorare le sue prestazioni nel gioco. La rete neurale per la politica (Policy Network) apprende a selezionare azioni basate sugli stati osservati, mentre la rete neurale per il valore dello stato (State Value Network) stima il valore di uno stato.
-
-## Risultati
-
-Durante l'addestramento, i punteggi medi ottenuti dall'agente vengono registrati e visualizzati periodicamente. Alla fine dell'addestramento, la curva di apprendimento viene tracciata e salvata come immagine `learning_curve.png`. Inoltre, i pesi delle reti neurali addestrate vengono salvati in file separati per la politica e il valore dello stato.
-
-## Contributi
-
-Sono benvenuti i contributi a questo progetto. Se desideri apportare modifiche o correzioni, ti invitiamo a creare una pull request.
+During training, the average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image `learning_curve.png`. In addition, the weights of the trained neural networks are saved in separate files for policy and state value.
