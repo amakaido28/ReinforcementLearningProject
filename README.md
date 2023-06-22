@@ -14,7 +14,7 @@ The goal of this project is to train an AI agent to pilot a lunar landing module
 
 ## Code Structure
 
-The code for the Actor-Critic model found in the `ac` folder is organized in the following files:
+The code for the Actor-Critic model found in the `AC` folder is organized in the following files:
 
 - `utils.py`: Contains utility functions for loss calculation, action selection and learning curve tracking.
 - `network.py`: Contains neural network definitions used for policy and state value.
