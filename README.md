@@ -25,4 +25,6 @@ During training, the agent uses the Actor-Critic (AC) algorithm to improve its p
 
 ## Results
 
-During training, the average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image `learning_curve.png`. In addition, the weights of the trained neural networks are saved in separate files for policy and state value.
+The average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image `learning_curve.png`. In addition, the weights of the trained neural networks are saved in separate files for policy and state value.
+
+![Learning Curve obtained during training with Actor-Critic model](./learning_curve.png)
