@@ -14,17 +14,24 @@ The goal of this project is to train an AI agent to pilot a lunar landing module
 
 ## Code Structure
 
-The code for the Actor-Critic model found in the `AC` folder is organized in the following files:
+The code for the each model found in the 'A2C' and 'PPO' folder is organized in the following files:
 
 - `utils.py`: Contains utility functions for loss calculation, action selection and learning curve tracking.
 - `network.py`: Contains neural network definitions used for policy and state value.
-- `train.py`: The main file that starts agent training on the Lunar Lander game.
+- `train.py`-`main.py`: The main file that starts agent training on the Lunar Lander game.
 - `test.py`: The file that starts the agent's test on the Lunar Lander game.
 
-During training, the agent uses the Actor-Critic (AC) algorithm to improve its performance. The neural network for policy (Policy Network) learns to select actions based on observed states, while the neural network for state value (State Value Network) estimates the value of a state.
+For the A2C implementation during training, the agent uses the Advantage Actor Critic (A2C) algorithm to improve its performance. The neural network for policy (Value) learns to select actions based on observed states, while the neural network for state value (Critic) estimates the value of a state.
+
+For the PPO implementation during training, the agent uses the Proximal Policy Optimization (PPO) algorithm to improve its performance. The neural network for policy (Value) learns to select actions based on observed states, while the neural network for state value (Actor) estimates the value of a state. And a ratio is used to compare the old policy with the new one, based on a clip.
 
 ## Results
 
-The average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image `learning_curve.png`. In addition, the weights of the trained neural networks are saved in separate files for policy and state value.
+The average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image. In addition, the weights of the trained neural networks are saved in separate files. Below it is possible to check the performance of both methods.
 
-![Learning Curve obtained during training with Actor-Critic model](./learning_curve.png)
+| <img src="./learning_curve_A2C.png" width="400px" height="350"> | <img src="./learning_curve_PPO.png" width="400px" height="350"> |
+|:--:|:--:|
+| A2C | PPO |
+
+
+
