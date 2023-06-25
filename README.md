@@ -31,5 +31,5 @@ The average scores obtained by the agent are recorded and displayed periodically
 
 <p align="center">
   <img src="./learning_curve_A2C.png" alt="A2C" width="400" />
-  <img src="./learning_curve_PPO.png" alt="PPO" width="500" />
+  <img src="./learning_curve_PPO.png" alt="PPO" width="450" />
 </p>
