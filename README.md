@@ -18,7 +18,7 @@ The code for the each model found in the 'A2C' and 'PPO' folder is organized in 
 
 - `utils.py`: Contains utility functions for loss calculation, action selection and learning curve tracking.
 - `network.py`: Contains neural network definitions used for policy and state value.
-- `train.py`\`main.py`: The main file that starts agent training on the Lunar Lander game.
+- `train.py`-`main.py`: The main file that starts agent training on the Lunar Lander game.
 - `test.py`: The file that starts the agent's test on the Lunar Lander game.
 
 For the A2C implementation during training, the agent uses the Advantage Actor Critic (A2C) algorithm to improve its performance. The neural network for policy (Value) learns to select actions based on observed states, while the neural network for state value (Critic) estimates the value of a state.
