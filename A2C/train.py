@@ -118,14 +118,14 @@ def train():
                     'adam_actor_state_dict': adam_actor.state_dict(),
                     'best_score':best_score,
                     'loss_actor': actor_loss},
-	                'C:\\Users\\kaidoama\\Desktop\\mio\\Reinforcement Learning\\LunarLander\\actor_model.pth'
+	                'actor_model.pth'
                 )
             torch.save(
                 {'step': i,
                 'critic_state_dict': critic.state_dict(),
                 'adam_critic_state_dict': adam_critic.state_dict(),
                 'loss_critic': critic_loss},
-	            'C:\\Users\\kaidoama\\Desktop\\mio\\Reinforcement Learning\\LunarLander\\critic_model.pth'
+	            'critic_model.pth'
             )
 
             print("!!!PROBLEM RESOLVED!!!")

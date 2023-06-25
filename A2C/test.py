@@ -61,7 +61,7 @@ def main():
         #actor load model
         actor = Actor(state_num,action_num)
         adam_actor = torch.optim.Adam(actor.parameters(), lr=3e-3)
-        checkpoint = torch.load('C:\\Users\\kaidoama\\Desktop\\mio\\Reinforcement Learning\\LunarLander\\actor_model.pth')
+        checkpoint = torch.load('actor_model.pth')
         actor.load_state_dict(checkpoint['actor_state_dict'])
         adam_actor.load_state_dict(checkpoint['adam_actor_state_dict'])
         j = checkpoint['step']
@@ -71,7 +71,7 @@ def main():
         #critic load model
         critic = Critic(state_num)
         adam_critic = torch.optim.Adam(critic.parameters(), lr=3e-3)
-        checkpoint = torch.load('C:\\Users\\kaidoama\\Desktop\\mio\\Reinforcement Learning\\LunarLander\\critic_model.pth')
+        checkpoint = torch.load('critic_model.pth')
         critic.load_state_dict(checkpoint['critic_state_dict'])
         adam_critic.load_state_dict(checkpoint['adam_critic_state_dict'])
         j = checkpoint['step']
