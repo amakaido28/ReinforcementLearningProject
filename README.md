@@ -29,4 +29,7 @@ For the PPO implementation during training, the agent uses the Proximal Policy O
 
 The average scores obtained by the agent are recorded and displayed periodically. At the end of training, the learning curve is plotted and saved as an image. In addition, the weights of the trained neural networks are saved in separate files. Below it is possible to check the performance of both methods.
 
-![Learning Curve obtained during training with Advantage Actor-Critic model](./learning_curve_A2C.png) ![Learning Curve obtained during training with Proximal Policy Optimization model](./learning_curve_PPO.png)
+<p align="center">
+  <img src="./learning_curve_A2C.png" alt="Image 1" width="400" />
+  <img src="./learning_curve_PPO.png" alt="Image 2" width="400" />
+</p>
