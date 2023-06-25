@@ -39,5 +39,5 @@ The average scores obtained by the agent are recorded and displayed periodically
     <img src="./learning_curve_PPO.png" alt="PPO" width="400" Height="300" />
     <br />
     <em>PPO</em>
-  s</p>
+  </p>
 </p>
