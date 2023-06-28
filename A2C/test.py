@@ -109,8 +109,7 @@ def main():
             if done:
                 ep_rewards.append(total_reward)
                 
-                if i % 10 == 0:
-                    print("episode: {}\treward: {}".format(i, total_reward))
+                print("episode: {}\treward: {}".format(i, total_reward))
                 break
 
 if __name__ == '__main__':
