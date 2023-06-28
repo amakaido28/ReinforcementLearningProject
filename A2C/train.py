@@ -11,7 +11,7 @@ from utils import plot_learning_curve,t
 def train():
     lr=2e-3
     gamma=0.99
-    mean_threshold=190
+    mean_threshold=200
     values_for_threashold=100
 
     figure_file='./learning_curve.png'
@@ -32,7 +32,7 @@ def train():
     actor=Actor(state_num,action_num)
     critic=Critic(state_num)
 
-    load_weights=False
+    load_weights=True
 
     score_history=[]
     
@@ -110,26 +110,27 @@ def train():
             print("mean score in last 20 episodes: {}\treward: {}".format(i, np.mean(ep_rewards[-20:])))
 
 
-        mean=round(np.mean(ep_rewards[-values_for_threashold:]), 3)
-        if mean>=mean_threshold:
-            torch.save(
-                    {'step': i,
-                    'actor_state_dict': actor.state_dict(),
-                    'adam_actor_state_dict': adam_actor.state_dict(),
-                    'best_score':best_score,
-                    'loss_actor': actor_loss},
-	                'actor_model.pth'
-                )
-            torch.save(
-                {'step': i,
-                'critic_state_dict': critic.state_dict(),
-                'adam_critic_state_dict': adam_critic.state_dict(),
-                'loss_critic': critic_loss},
-	            'critic_model.pth'
-            )
+        if len(ep_rewards)>=100:
 
-            print("!!!PROBLEM RESOLVED!!!")
-            break
+            mean=round(np.mean(ep_rewards[-values_for_threashold:]), 3)
+            if mean>=mean_threshold:
+                torch.save(
+                        {'step': i,
+                        'actor_state_dict': actor.state_dict(),
+                        'adam_actor_state_dict': adam_actor.state_dict(),
+                        'best_score':best_score,
+                        'loss_actor': actor_loss},
+	                    'actor_model.pth'
+                    )
+                torch.save(
+                    {'step': i,
+                    'critic_state_dict': critic.state_dict(),
+                    'adam_critic_state_dict': adam_critic.state_dict(),
+                    'loss_critic': critic_loss},
+	                'critic_model.pth'
+                )
+                print("!!!PROBLEM RESOLVED!!!")
+                break
 
     x = [(i+1)*20 for i in range(len(score_history))]
     plot_learning_curve(x, ep_rewards_=score_history, figure_file_=figure_file)
