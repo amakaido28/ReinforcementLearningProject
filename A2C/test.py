@@ -95,7 +95,7 @@ def main():
         state,_=env.reset()
         
         
-        for j in range(1000):
+        for j in range(800):
             probs=actor(t(state))
             dist=torch.distributions.Categorical(probs=probs)
             action=dist.sample()
